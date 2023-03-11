@@ -1,0 +1,6 @@
+<div class="w-full status py-1 px-4 lg:py-3 md:min-w-[10rem] lg:px-8 rounded-lg text-center"
+     [ngClass]="{'bg-grndark': status === 'Paid', 'bg-orgdark': status === 'Pending', 'bg-gradark': status === 'Draft'}">
+  <p class="font-medium text-base lg:text-lg  whitespace-nowrap"
+     [ngClass]="{'text-grn': status === 'Paid', 'text-org': status === 'Pending', 'text-gra': status === 'Draft'}"
+  >&bull; {{status}}</p>
+</div>

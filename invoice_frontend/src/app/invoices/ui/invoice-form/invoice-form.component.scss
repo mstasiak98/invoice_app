@@ -1,0 +1,16 @@
+input, select{
+  padding: 0.5rem;
+  background: #252945;
+  color: white;
+  border: 1px solid #2a2c43;
+  border-radius: 0.25rem;
+}
+
+input:focus-visible {
+  outline: none;
+  border:1px solid #7c5df9;
+}
+
+.invalid {
+  border: 1px solid red;
+}

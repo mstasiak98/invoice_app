@@ -1,0 +1,17 @@
+thead th {
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+tbody tr td{
+  padding-inline: 1.5rem;
+  padding-block: 0.5rem
+}
+tbody tr:last-child td {
+  padding-bottom: 1.5rem;
+}
+tfoot tr td {
+  padding: 1.5rem;
+}
+tfoot {
+  border-bottom-right-radius: 1rem;
+}

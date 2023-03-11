@@ -1,0 +1,21 @@
+<a routerLink="/details/{{invoice.id}}">
+  <div class="w-full py-4 px-6 bg-primary rounded-lg card cursor-pointer">
+    <div class="card__number min-w-[5rem]">
+      <p class="text-white font-medium truncate"><span class="text-gra">#</span>{{invoice.invoiceNumber}}</p>
+    </div>
+    <div class="card__date min-w-[5rem]">
+      <p class="text-gra truncate text-sm">Due {{invoice.date}}</p>
+    </div>
+    <div class="card__name min-w-[5rem] max-w-[9rem] truncate">
+      <p class="text-gra truncate text-sm">{{invoice.clientName}}</p>
+    </div>
+    <div class="card__price min-w-[3rem]">
+      <p class="text-white text-lg font-medium truncate"> {{invoice.total | currency: 'USD'}}</p>
+    </div>
+    <div class="card__status min-w-[5rem] flex flex-row items-center gap-2 lg:gap-4">
+      <app-invoice-status status="{{invoice.status.name}}"></app-invoice-status>
+      <svg class="hidden md:block" fill="#7c5df9" height="30px" width="30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M419.3 264.8l-61.8 61.8L542.9 512 357.5 697.4l61.8 61.8L666.5 512z"></path></g></svg>
+    </div>
+  </div>
+</a>
+

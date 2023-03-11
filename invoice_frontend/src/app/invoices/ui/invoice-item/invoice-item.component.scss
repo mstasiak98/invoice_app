@@ -1,0 +1,41 @@
+.card {
+  display: grid;
+  align-items: end;
+  justify-content: space-between;
+  grid-template-areas:
+    'num name'
+    'date status'
+    'price status';
+  grid-row-gap: 0.5rem;
+  grid-column-gap: 3.5rem;
+}
+
+@media (min-width: 768px) {
+  .card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2.75rem;
+  }
+}
+
+.card__number {
+  grid-area: num;
+}
+
+.card__date {
+  grid-area: date;
+}
+
+.card__price {
+  grid-area: price;
+}
+
+.card__name {
+  grid-area: name;
+}
+
+.card__status {
+  grid-area: status;
+  justify-self: end;
+}

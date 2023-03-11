@@ -1,0 +1,42 @@
+<div class="w-full h-full">
+  <div class="w-full flex flex-row justify-between items-center">
+    <div>
+      <p class="text-2xl md:text-4xl text-white font-medium">Invoices</p>
+      <span class="mt-2.5 text-sm text-gra font-medium">There are {{totalElements$ | async}} total invoices</span>
+    </div>
+    <button (click)="openSidebar()" type="button" class="bg-prp text-white py-2 px-4 inline-flex items-center rounded-3xl justify-between hover:bg-violet-500">
+      <div class="rounded-full">
+        <svg width="35px" height="35px" fill="#ffffff" viewBox="-2 -2 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" class="jam jam-plus-circle-f"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M11 11h4a1 1 0 0 0 0-2h-4V5a1 1 0 0 0-2 0v4H5a1 1 0 1 0 0 2h4v4a1 1 0 0 0 2 0v-4zm-1 9C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10z"></path></g></svg>
+      </div>
+      <span class="ml-4 sm:block hidden whitespace-nowrap font-medium">New Invoice</span>
+      <span class="ml-4 sm:block sm:hidden font-medium">New</span>
+    </button>
+  </div>
+  <div *ngIf="invoices$ | async as invoices" class="mt-12 flex flex-col gap-4">
+    <app-invoice-item *ngFor="let invoice of invoices" [invoice]="invoice"></app-invoice-item>
+    <div *ngIf="invoices.length > 0" class="w-full flex justify-end">
+      <div *ngIf="(currentPage$ | async) as page" class="flex flex-row ">
+        <ng-container>
+          <button [ngClass]="{'disabled': page <= 1 }" (click)="loadPrevious()" type="button" class="bg-primary text-white rounded-l-md border-r border-gray-100 py-2 hover:bg-prmlight px-3">
+            <div class="flex flex-row align-middle">
+              <svg class="w-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+              </svg>
+              <p class="ml-2">Prev</p>
+            </div>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="(totalPages$ | async) as totalPages">
+          <button [ngClass]="{'disabled': page >= totalPages }" (click)="loadNext()" type="button" class="bg-primary text-white rounded-r-md py-2 border-l border-gray-200 hover:bg-prmlight px-3">
+            <div class="flex flex-row align-middle">
+              <span class="mr-2">Next</span>
+              <svg class="w-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

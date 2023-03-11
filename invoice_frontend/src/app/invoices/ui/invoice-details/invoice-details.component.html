@@ -1,0 +1,141 @@
+<div class="w-full">
+  <a routerLink="/" class="text-white inline-flex items-center hover:text-gra mb-4">
+    <svg class="rotate-180" fill="#7c5df9" height="30px" width="30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M419.3 264.8l-61.8 61.8L542.9 512 357.5 697.4l61.8 61.8L666.5 512z"></path></g></svg>
+    Go back
+  </a>
+  <ng-container *ngIf="invoice$ | async as invoice">
+    <div class="w-full bg-primary px-6 py-6 flex flex-row justify-between items-center">
+      <div class="w-full justify-between md:justify-start md:w-fit flex flex-row items-center gap-6">
+        <p class="text-gra">Status</p>
+        <app-invoice-status status="{{invoice.status.name}}"></app-invoice-status>
+      </div>
+      <div class="hidden md:flex justify-end gap-3">
+        <button (click)="openEditSidebar()"
+                type="button"
+                class="text-sm font-medium text-white px-4 py-2.5 bg-prmlight rounded-full hover:bg-secondary border-gra border-[1px]">
+          Edit
+        </button>
+        <button (click)="togglePopup()" type="button" class="text-sm font-medium text-white px-4 py-2.5 bg-red-500 rounded-full hover:bg-red-600 relative">
+          Delete
+          <app-confirmation-popup [showPopup]="showPopup$" (confirmation)="deleteInvoice($event)" class="mt-2 absolute top-[100%] right-0"></app-confirmation-popup>
+        </button>
+
+        <button (click)="changeInvoiceStatus()"
+                *ngIf="invoice.status.name !== 'Draft'"
+                type="button"
+                class="text-sm font-medium text-white px-4 py-2.5 bg-prp rounded-full hover:bg-violet-500">
+          {{invoice.status.name === 'Pending' ? 'Mark as Paid' : 'Mark as Pending'}}
+        </button>
+      </div>
+    </div>
+    <div class="w-full bg-primary px-6 py-8 lg:px-8 lg:py-10 mt-5">
+      <div class="flex flex-col gap-y-4 md:flex-row md:justify-between">
+        <div>
+          <p class="text-white text-lg font-medium"><span class="text-gra">#</span>{{invoice.invoiceNumber}}</p>
+          <span class="text-sm text-gra mt-1">{{invoice?.description}}</span>
+        </div>
+        <div class="">
+          <p class="text-sm text-gra mt-0.5">{{invoice.issuerAddress.street}}</p>
+          <p class="text-sm text-gra mt-0.5">{{invoice.issuerAddress.city}}</p>
+          <p class="text-sm text-gra mt-0.5">{{invoice.issuerAddress.postCode}}</p>
+          <p class="text-sm text-gra mt-0.5">{{invoice.issuerAddress.country}}</p>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-y-4">
+        <div class="w-1/2 md:w-1/3 flex flex-col justify-between">
+          <div>
+            <p class="text-sm text-gra mb-1.5 font-medium">Invoice Date</p>
+            <p class="text-white text-lg font-medium">{{invoice.date | date:'mediumDate'}}</p>
+          </div>
+          <div >
+            <p class="text-sm text-gra mb-1.5 font-medium">Payment Due</p>
+            <p class="text-white text-lg font-medium">{{invoice.paymentTerm | dateDue:invoice.date}}</p>
+          </div>
+        </div>
+        <div class="w-1/2 md:w-1/3">
+          <p class="text-sm text-gra mb-1.5 font-medium">Bill To</p>
+          <p class="text-white font-medium mb-1.5">{{invoice.clientName}}</p>
+          <p class="text-sm text-gra mt-0.5">{{invoice.clientAddress.street}}</p>
+          <p class="text-sm text-gra mt-0.5">{{invoice.clientAddress.city}}</p>
+          <p class="text-sm text-gra mt-0.5">{{invoice.clientAddress.postCode}}</p>
+          <p class="text-sm text-gra mt-0.5">{{invoice.clientAddress.country}}</p>
+        </div>
+        <div class="w-full md:w-1/3">
+          <p class="text-sm text-gra font-medium mb-1.5">Send to</p>
+          <p class="text-white font-medium mb-1.5">{{invoice.clientEmail}}</p>
+        </div>
+      </div>
+      <div class="mt-8 w-full bg-prmlight rounded-lg">
+
+        <!--Tablet and desktop view-->
+        <div class="hidden md:block">
+          <table class="w-full ">
+            <thead class="text-gra text-sm ">
+            <th class="text-left ">Item Name</th>
+            <th class="text-right">Qty</th>
+            <th class="text-right">Price</th>
+            <th class="text-right">Total</th>
+            </thead>
+            <tbody class="pt-2">
+            <tr *ngFor="let invoiceItem of invoice.invoiceItems">
+              <td class="text-white font-medium ">{{invoiceItem.name}}</td>
+              <td class="text-white font-medium text-right">{{invoiceItem.quantity}}</td>
+              <td class="text-white font-medium text-right">{{invoiceItem.price | currency: 'USD'}}</td>
+              <td class="text-white font-medium text-right">{{invoiceItem.totalPrice | currency: 'USD'}}</td>
+            </tr>
+
+            </tbody>
+            <tfoot class="bg-secondary">
+            <tr>
+              <td class="text-gra font-medium">Amount Due</td>
+              <td colspan="3" class="text-right text-lg font-medium text-white">{{invoice.total | currency: 'USD'}}</td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!--Mobile View-->
+        <div class="block md:hidden">
+          <div class="p-4">
+            <div *ngFor="let invItem of invoice.invoiceItems" class="flex flex-row justify-between items-center mb-2.5">
+              <div>
+                <p class="text-white font-medium mb-1 truncate">{{invItem.name}}</p>
+                <p class="text-sm text-gra">{{invItem.quantity}}x {{invItem.price | currency: 'USD'}}</p>
+              </div>
+              <div>
+                <p class="text-lg font-medium text-white">{{invItem.totalPrice | currency: 'USD'}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="inline-flex items-center justify-between bg-secondary w-full p-4 rounded-b-lg">
+            <p class="text-gra font-medium">Amount Due</p>
+            <p class="text-lg text-white font-medium"> {{invoice.total | currency: 'USD'}}</p>
+          </div>
+        </div>
+
+      </div>
+      <!--Mobile buttons-->
+      <div class="block md:hidden w-full mt-8 flex justify-end gap-3">
+        <button
+          (click)="openEditSidebar()"
+          type="button"
+          class="text-sm font-medium text-white px-4 py-2.5 bg-prmlight rounded-3xl hover:bg-secondary border-secondary border-[1px]">
+          Edit
+        </button>
+        <button (click)="togglePopup()"
+                type="button"
+                class="text-sm font-medium text-white px-4 py-2.5 bg-red-500 rounded-3xl hover:bg-red-600 relative">
+          Delete
+          <app-confirmation-popup [showPopup]="showPopup$" (confirmation)="deleteInvoice($event)" class="mb-2 absolute bottom-[100%] left-0"></app-confirmation-popup>
+        </button>
+        <button
+          (click)="changeInvoiceStatus()"
+          *ngIf="invoice.status.name !== 'Draft'"
+          type="button" class="text-sm font-medium text-white px-4 py-2.5 bg-prp rounded-3xl hover:bg-violet-500">
+          {{invoice.status.name === 'Pending' ? 'Mark as Paid' : 'Mark as Pending'}}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
+</div>
