@@ -73,16 +73,17 @@ public class InvoiceServiceImp implements InvoiceService{
             //assign new values and delete previous invoice items
             invoice.setClientName(invoiceDto.getInvoice().getClientName());
             invoice.setClientEmail(invoiceDto.getInvoice().getClientEmail());
-            invoice.setDate(invoiceDto.getInvoice().getDate());
             invoice.setDescription(invoiceDto.getInvoice().getDescription());
 
             // remove and detach previous invoice items
             this.removeInvoiceItemsFromInvoice(invoice);
             invoice.setInvoiceItems(new HashSet<>());
 
-        }else {
-            //create new invoice number when adding invoice
-            String invoiceNumber = this.generateInvoiceNumber();
+        }
+
+        //create new invoice number when adding invoice or update number when year changed
+        if(invoice.getId() == null || !getYearFromDate(invoiceDto.getInvoice().getDate()).equals(getYearFromDate(invoice.getDate()))) {
+            String invoiceNumber = this.generateInvoiceNumber(invoiceDto.getInvoice().getDate());
             invoice.setInvoiceNumber(invoiceNumber);
         }
 
@@ -94,6 +95,7 @@ public class InvoiceServiceImp implements InvoiceService{
             total = total.add(invItem.getTotalPrice());
         }
 
+        invoice.setDate(invoiceDto.getInvoice().getDate());
         invoice.setTotal(total);
         invoice.setClientAddress(client);
         invoice.setIssuerAddress(issuer);
@@ -141,9 +143,16 @@ public class InvoiceServiceImp implements InvoiceService{
         return invoice;
     }
 
-    private String generateInvoiceNumber() { return "210001"; }
+    private String generateInvoiceNumber(String date) {
+        int count = invoiceRepository.getInvoiceCountByYear(date).orElse(0) + 1;
+        return getYearFromDate(date) + '-' + count;
+    }
 
     private void removeInvoiceItemsFromInvoice(Invoice invoice) {
         invoice.getInvoiceItems().forEach(item -> invoiceItemRepository.deleteById(item.getId()));
+    }
+
+    private String getYearFromDate(String date) {
+        return date.substring(0,4);
     }
 }
