@@ -1,0 +1,29 @@
+version: '3.8'
+
+services: 
+    mysqldb:
+        image: mysql:8.0.31
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: invoice
+        ports:
+          - 3307:3306
+        volumes:
+          - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
+          - my_db:/var/lib/mysql
+    backend:
+        depends_on:
+          - mysqldb
+        build: ./spring-boot-backend
+        restart: on-failure
+        env_file: ./.env
+        ports:
+          - 8080:8080
+        volumes:
+          - .m2:/root/.m2
+          - ./spring-boot-backend:/app
+        stdin_open: true
+        tty: true
+volumes:
+    my_db:
